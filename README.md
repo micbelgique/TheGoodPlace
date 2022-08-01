@@ -7,8 +7,8 @@ THE GOOD PLACE is a system that tells you live where the best place in the MIC i
 
 ## Web
 
-Web client: https://thegoodplace.azurewebsites.net/
-Web service: https://goodplacewebservice20220714145722.azurewebsites.net/
+- Web client: https://thegoodplace.azurewebsites.net/
+- Web service: https://goodplacewebservice20220714145722.azurewebsites.net/
 
 The project in one article: https://www.mic-belgique.be/blog/articles/trouver-l-endroit-le-plus-agreable-pour-travailler-grace-aux-donnees/
 
