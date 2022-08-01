@@ -1,54 +1,32 @@
 .App {
   text-align: center;
   font-style: bold;
-  font-family:'Courier New', Courier, monospace
-}
-
-nav{
-  background-color: #57ab5a;
-  color:white;
-  display: flex;
-  align-items: center;
-  min-height:10vh;
-  font-size: x-large;
-  font-style: bold;
-}
-
-li{
-  list-style: none;
-  padding-left: 10%;
-}
-
-.navlink{
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
-
-ul{
-  width: 20%;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
-
-tr{
- 
+  font-family: 'Bebas Neue', cursive;
+  
 }
 
 td{
   background-color: #d0cfcf4e;
+  text-align: center
 }
 
-th{
-  width: 100%;
-}
+
 
 table{
   width: 50%;
   align-items: center;
   border:none;
+  font-size:large;
 }
+
+.tableGoodplace{
+  color: #e6eae6;
+  width: 50%;
+  
+}
+
+
+
 
 
 
@@ -60,8 +38,8 @@ table{
 
 .card {
   margin: 20px;
-  padding: 20px;
-  width: 100%;
+  padding: 50px;
+  width: 80%;
   min-height: 200px;
   display: grid;
   grid-template-rows: 20px 50px 1fr 50px;
@@ -75,55 +53,27 @@ table{
   transform: scale(1.01);
 }
 
-
-
-.card__link::after {
-  position: absolute;
-  top: 25px;
-  left: 0;
-  content: "";
-  width: 0%;
-  height: 3px;
-  background-color: rgba(255, 255, 255, 0.6);
-  transition: all 0.5s;
-}
-
-.card__link:hover::after {
-  width: 100%;
-}
-
-.card__exit {
-  grid-row: 1/2;
-  justify-self: end;
-}
-
-.card__icon {
-  grid-row: 2/3;
-  font-size: 30px;
-}
-
 .card__title {
-  grid-row: 3/4;
+  grid-row: 1/4;
   font-weight: 400;
   color: #ffffff;
+  font-size: 50px;
 }
-
-.card__apply {
-  grid-row: 4/5;
-  align-self: center;
-}
-
 /* CARD BACKGROUNDS */
-
 .card-1 {
-  background: radial-gradient(#57ab5a, #57ab5c);
+  background-color: #57ab5a;
+   /* background-image: url(assets/images/room.jpg);  */
+  background-size: cover;
+  background-repeat: no-repeat;
+
 }
-
-
 /* RESPONSIVE */
-
 @media (max-width: 1600px) {
   .cards {
     justify-content: center;
   }
+}
+.title{
+  font-size: xx-large;
+  color: #2a2b2a;
 }
