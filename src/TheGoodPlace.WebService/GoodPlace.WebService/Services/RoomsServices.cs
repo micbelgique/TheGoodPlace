@@ -30,7 +30,7 @@ namespace GoodPlace.WebService.Services
             RoomRankingDto ranking = new RoomRankingDto
             {
                 Rooms = environnements,
-                TheGoodPlace = environnements.Last()
+                TheGoodPlace = environnements.First()
             };
 
             return ranking;
