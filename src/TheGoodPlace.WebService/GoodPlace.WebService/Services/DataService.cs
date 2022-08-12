@@ -80,7 +80,7 @@ namespace GoodPlace.WebService.Services
            // deviceId = "70B3D54750100259";
 
             // New instance of the TableClient class
-            TableServiceClient tableServiceClient = new TableServiceClient(_configuration.GetConnectionString("MyStorageConnection"));
+            TableServiceClient tableServiceClient = new TableServiceClient("DefaultEndpointsProtocol=https;AccountName=sathegoodplace0722;AccountKey=4jL1lVaThaxHFsx9rvUVQ6K2xJhV+FUe/r3GfgHZQDnI6qNVOzyqrkrn4sTKGzEEoxJAuib2nFzw+AStZhl+YA==;EndpointSuffix=core.windows.net");
 
             // New instance of TableClient class referencing the server-side table
             TableClient tableClient = tableServiceClient.GetTableClient(
