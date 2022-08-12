@@ -29,7 +29,7 @@ namespace GoodPlace.WebService.Services
             RoomRankingDto ranking = new RoomRankingDto
             {
                 Rooms = environnements,
-                TheGoodPlace = environnements.First()
+                TheGoodPlace = environnements.Last()
             };
 
             return ranking;
@@ -53,10 +53,8 @@ namespace GoodPlace.WebService.Services
                     environnement.Humidity = devicePayloads.Humidity;
                     environnement.Luminosity = devicePayloads.Luminosity;
 
-                    environnement.WellnessValue = environnement.Temperature - 22;
+                    environnement.WellnessValue = Math.Abs(environnement.Temperature - 21) + Math.Abs(environnement.Humidity - 50);
                 }
-                // Apply the wellness formula
-                /*int wellnessValue = 125264;*/ // result of the formula
             }
 
 

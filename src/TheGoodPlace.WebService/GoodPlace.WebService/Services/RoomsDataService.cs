@@ -13,49 +13,49 @@ namespace GoodPlace.WebService.Services
             roomList.Add(new Room
             {
                 Name = "La Station",
-                PictureUrl = "",
+                PictureUrl = "https://www.mic-belgique.be/rooms/Station",
                 DeviceId = "70B3D547501000B5"
             });
 
             roomList.Add(new Room
             {
                 Name = "Le Studio",
-                PictureUrl = "",
+                PictureUrl = "https://www.mic-belgique.be/rooms/Studio",
                 DeviceId = "70B3D54750100259"
             });
 
             roomList.Add(new Room
             {
                 Name = "Le Cockpit",
-                PictureUrl = "",
+                PictureUrl = "https://www.mic-belgique.be/rooms/Cockpit",
                 DeviceId = "70B3D54750100291"
             });
 
             roomList.Add(new Room
             {
                 Name = "Le Loft",
-                PictureUrl = "",
+                PictureUrl = "https://www.mic-belgique.be/rooms/Loft",
                 DeviceId = "70B3D54750100263"
             });
 
             roomList.Add(new Room
             {
                 Name = "L'espace Network",
-                PictureUrl = "",
+                PictureUrl = "https://www.mic-belgique.be/rooms/Coffee",
                 DeviceId = "70B3D54750100252"
             });
 
             roomList.Add(new Room
             {
                 Name = "Le Hall",
-                PictureUrl = "",
+                PictureUrl = "https://www.mic-belgique.be/rooms/Hall",
                 DeviceId = ""
             });
 
             roomList.Add(new Room
             {
                 Name = "L'espace Workplace",
-                PictureUrl = "",
+                PictureUrl = "https://www.mic-belgique.be/rooms/OpenSpace",
                 DeviceId = ""
             });
 
