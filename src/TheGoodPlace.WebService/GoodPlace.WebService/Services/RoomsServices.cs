@@ -23,9 +23,9 @@ namespace GoodPlace.WebService.Services
 
         public RoomRankingDto GetRoomRanking()
         {
-            var environnements = this.CreateRankingFromPayloads();
-
-            environnements.OrderByDescending(x => x.WellnessValue);
+            var environnements = this.CreateRankingFromPayloads()
+                                     .OrderBy(x => x.WellnessValue)
+                                     .ToList();
 
             var goodPlace = environnements.First();
             environnements.Remove(goodPlace);
@@ -52,16 +52,14 @@ namespace GoodPlace.WebService.Services
             // We associate the values of each devices in the right room
             foreach(RoomEnvironnementDto environnement in environnements)
             {
-                if (environnement.DeviceId != "")
-                {
-                    var devicePayloads = this.getLastrecordsFromSpecificDevice(datas, environnement.DeviceId);
-                    environnement.Temperature = devicePayloads.Temperature;
-                    environnement.Humidity = devicePayloads.Humidity;
-                    environnement.Luminosity = devicePayloads.Luminosity;
-                    environnement.LastSync = devicePayloads.LastSync;
+                var devicePayloads = this.getLastrecordsFromSpecificDevice(datas, environnement.DeviceId);
+                environnement.Temperature = devicePayloads.Temperature;
+                environnement.Humidity = devicePayloads.Humidity;
+                environnement.Luminosity = devicePayloads.Luminosity;
+                environnement.LastSync = devicePayloads.LastSync;
 
-                    environnement.WellnessValue = Math.Abs(environnement.Temperature - 21) + Math.Abs(environnement.Humidity - 50);
-                }
+                // Crazy space futuristic environnement formula
+                environnement.WellnessValue = (Math.Abs(environnement.Temperature - 21) * 3) + Math.Abs(environnement.Humidity - 50);
             }
 
             return environnements;
@@ -72,14 +70,17 @@ namespace GoodPlace.WebService.Services
             List<RoomEnvironnementDto> rankedRooms = new List<RoomEnvironnementDto>();
             foreach (Room room in rooms)
             {
-                rankedRooms.Add(
+                if (room.DeviceId != "")
+                {
+                    rankedRooms.Add(
                     new RoomEnvironnementDto
                     {
                         Name = room.Name,
                         PictureUrl = room.PictureUrl,
                         DeviceId = room.DeviceId
                     }
-                );
+                    );
+                }
             }
 
             return rankedRooms;
