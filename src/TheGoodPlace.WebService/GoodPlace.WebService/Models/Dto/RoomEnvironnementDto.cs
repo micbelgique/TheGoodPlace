@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GoodPlace.WebService.Dto
 {
@@ -17,5 +18,6 @@ namespace GoodPlace.WebService.Dto
         public float Temperature { get; set; }
         public float Humidity { get; set; }
         public int Luminosity { get; set; }
+        public DateTime LastSync { get; set; }
     }
 }
