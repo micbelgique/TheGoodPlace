@@ -44,14 +44,14 @@ namespace GoodPlace.WebService.Services
             // We get a list of all room in rankedRoom format
             var environnements = this.MapRoomsIntoEnvironnements(rooms);
 
-            var datas = _dataService.GetAllDatas();
+            var datas = _dataService.GetRecentRecords(DateTime.Now.AddDays(-1));
 
             // We associate the values of each devices in the right room
             foreach(RoomEnvironnementDto environnement in environnements)
             {
                 if (environnement.DeviceId != "")
                 {
-                    var devicePayloads = this.LastrecordsFromSpecificDevice(datas, environnement.DeviceId); //_dataService.LastrecordsFromSpecificDevice(environnement.DeviceId);
+                    var devicePayloads = this.getLastrecordsFromSpecificDevice(datas, environnement.DeviceId);
                     environnement.Temperature = devicePayloads.Temperature;
                     environnement.Humidity = devicePayloads.Humidity;
                     environnement.Luminosity = devicePayloads.Luminosity;
@@ -81,7 +81,7 @@ namespace GoodPlace.WebService.Services
             return rankedRooms;
         }
 
-        public RoomEnvironnementDto LastrecordsFromSpecificDevice(List<Payload> data, string deviceId)
+        public RoomEnvironnementDto getLastrecordsFromSpecificDevice(List<Payload> data, string deviceId)
         {
             // Query  by deviceId
 

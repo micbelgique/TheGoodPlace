@@ -1,6 +1,7 @@
 ﻿using Azure.Data.Tables;
 using GoodPlace.WebService.Dto;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -30,6 +31,20 @@ namespace GoodPlace.WebService.Services
             ) ;
 
             var datas = tableClient.Query<Payload>().ToList();
+            return datas;
+        }
+
+        public List<Payload> GetRecentRecords(DateTime minDate)
+        {
+            // New instance of the TableClient class
+            TableServiceClient tableServiceClient = new TableServiceClient(_configuration.GetConnectionString("MyStorageConnection"));
+
+            // New instance of TableClient class referencing the server-side table
+            TableClient tableClient = tableServiceClient.GetTableClient(
+                tableName: "DevicesDataTable"
+            );
+
+            var datas = tableClient.Query<Payload>(x => x.date > minDate).ToList();
             return datas;
         }
 
