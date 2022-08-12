@@ -48,12 +48,5 @@ namespace GoodPlace.WebService.Controllers
         {
             return Ok(_service.LastrecordsFromSpecificDevice(devEUI));
         }
-
-        [HttpGet("goodplace")]
-        [Produces("application/json", Type = null)]
-        public IActionResult GoodPlace()
-        {
-            return Ok(_service.ThegoodPlace());
-        }
     }
 }

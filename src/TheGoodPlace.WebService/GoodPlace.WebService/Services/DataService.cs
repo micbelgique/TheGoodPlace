@@ -19,7 +19,7 @@ namespace GoodPlace.WebService.Services
             _roomDataService = roomDataService;
         }
 
-        public IEnumerable<Payload> GetAllDatas()
+        public List<Payload> GetAllDatas()
         {
             // New instance of the TableClient class
             TableServiceClient tableServiceClient = new TableServiceClient(_configuration.GetConnectionString("MyStorageConnection"));
@@ -29,7 +29,7 @@ namespace GoodPlace.WebService.Services
                 tableName: "DevicesDataTable"
             ) ;
 
-            var datas = tableClient.Query<Payload>();
+            var datas = tableClient.Query<Payload>().ToList();
             return datas;
         }
 
@@ -89,7 +89,6 @@ namespace GoodPlace.WebService.Services
 
             // Query  by deviceId
 
-            
             var lastRecordByDeviceTemp = tableClient.Query<Payload>()
                  .Where(x
                      => x.devEUI == deviceId
@@ -133,86 +132,6 @@ namespace GoodPlace.WebService.Services
         
 
             return roomEnvironnement;
-        }
-
-        public IList ThegoodPlace()
-        {
-            // New instance of the TableClient class
-            TableServiceClient tableServiceClient = new TableServiceClient(_configuration.GetConnectionString("MyStorageConnection"));
-
-            // New instance of TableClient class referencing the server-side table
-            TableClient tableClient = tableServiceClient.GetTableClient(
-                tableName: "DevicesDataTable"
-            );
-
-
-            //Request By devices
-
-            var lastTempFor70B3D54750100263 = tableClient.Query<Payload>()
-                             .Where(x
-                                 => x.devEUI == "70B3D54750100263"
-                                 && x.container == "temperature"
-                                 )
-                             .OrderByDescending(x => x.date)
-                             .Take(1)
-                             .Select(x => x)
-                             .ToList()
-                             .FirstOrDefault();
-
-            var lastTempFor70B3D54750100291 = tableClient.Query<Payload>()
-                 .Where(x
-                     => x.devEUI == "70B3D54750100291"
-                     && x.container == "temperature"
-                     )
-                 .OrderByDescending(x => x.date)
-                 .Take(1)
-                 .Select(x => x)
-                 .ToList()
-                 .FirstOrDefault();
-
-            var lastTempFor70B3D54750100252 = tableClient.Query<Payload>()
-                 .Where(x
-                     => x.devEUI == "70B3D54750100252"
-                     && x.container == "temperature"
-                     )
-                 .OrderByDescending(x => x.date)
-                 .Take(1)
-                 .Select(x => x)
-                 .ToList()
-                 .FirstOrDefault();
-
-            var lastTempFor70B3D54750100259 = tableClient.Query<Payload>()
-                 .Where(x
-                     => x.devEUI == "70B3D54750100259"
-                     && x.container == "temperature"
-                     )
-                 .OrderByDescending(x => x.date)
-                 .Take(1)
-                 .Select(x => x)
-                 .ToList()
-                 .FirstOrDefault();
-
-            var lastTempFor70B3D547501000B5 = tableClient.Query<Payload>()
-                 .Where(x
-                     => x.devEUI == "70B3D547501000B5"
-                     && x.container == "temperature"
-                     )
-                 .OrderByDescending(x => x.date)
-                 .Take(1)
-                 .Select(x => x)
-                 .ToList()
-                 .FirstOrDefault();
-
-            List < Payload > list = new List<Payload>();
-
-            list.Add(lastTempFor70B3D54750100291);
-            list.Add(lastTempFor70B3D54750100252);
-            list.Add(lastTempFor70B3D54750100259);
-            list.Add(lastTempFor70B3D54750100263);
-            list.Add(lastTempFor70B3D547501000B5);
-
-            return list;
-
         }
     }
 }

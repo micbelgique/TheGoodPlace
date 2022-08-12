@@ -5,6 +5,7 @@ using GoodPlace.WebService.Services;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace GoodPlace.WebService.Services
@@ -43,12 +44,14 @@ namespace GoodPlace.WebService.Services
             // We get a list of all room in rankedRoom format
             var environnements = this.MapRoomsIntoEnvironnements(rooms);
 
+            var datas = _dataService.GetAllDatas();
+
             // We associate the values of each devices in the right room
             foreach(RoomEnvironnementDto environnement in environnements)
             {
                 if (environnement.DeviceId != "")
                 {
-                    var devicePayloads = _dataService.LastrecordsFromSpecificDevice(environnement.DeviceId);
+                    var devicePayloads = this.LastrecordsFromSpecificDevice(datas, environnement.DeviceId); //_dataService.LastrecordsFromSpecificDevice(environnement.DeviceId);
                     environnement.Temperature = devicePayloads.Temperature;
                     environnement.Humidity = devicePayloads.Humidity;
                     environnement.Luminosity = devicePayloads.Luminosity;
@@ -56,7 +59,6 @@ namespace GoodPlace.WebService.Services
                     environnement.WellnessValue = Math.Abs(environnement.Temperature - 21) + Math.Abs(environnement.Humidity - 50);
                 }
             }
-
 
             return environnements;
         }
@@ -77,6 +79,45 @@ namespace GoodPlace.WebService.Services
             }
 
             return rankedRooms;
+        }
+
+        public RoomEnvironnementDto LastrecordsFromSpecificDevice(List<Payload> data, string deviceId)
+        {
+            // Query  by deviceId
+
+            var lastRecordByDeviceTemp = data
+                 .Where(x
+                     => x.devEUI == deviceId
+                     && x.container == "temperature"
+                     )
+                 .OrderByDescending(x => x.date)
+                 .FirstOrDefault();
+
+            var lastRecordByDeviceHum = data
+                 .Where(x
+                     => x.devEUI == deviceId
+                     && x.container == "humidity"
+                     )
+                 .OrderByDescending(x => x.date)
+                 .FirstOrDefault();
+
+            var lastRecordByDeviceLum = data
+                 .Where(x
+                     => x.devEUI == deviceId
+                     && x.container == "luminosity"
+                     )
+                 .OrderByDescending(x => x.date)
+                 .FirstOrDefault();
+
+            RoomEnvironnementDto roomEnvironnement = new RoomEnvironnementDto
+            {
+                DeviceId = deviceId,
+                Temperature = float.Parse(lastRecordByDeviceTemp.value, CultureInfo.InvariantCulture.NumberFormat),
+                Humidity = float.Parse(lastRecordByDeviceHum.value, CultureInfo.InvariantCulture.NumberFormat),
+                Luminosity = int.Parse(lastRecordByDeviceLum.value, CultureInfo.InvariantCulture.NumberFormat)
+            };
+
+            return roomEnvironnement;
         }
     }
 }
