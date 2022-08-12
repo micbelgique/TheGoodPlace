@@ -27,10 +27,13 @@ namespace GoodPlace.WebService.Services
 
             environnements.OrderByDescending(x => x.WellnessValue);
 
+            var goodPlace = environnements.First();
+            environnements.Remove(goodPlace);
+
             RoomRankingDto ranking = new RoomRankingDto
             {
                 Rooms = environnements,
-                TheGoodPlace = environnements.First()
+                TheGoodPlace = goodPlace
             };
 
             return ranking;
