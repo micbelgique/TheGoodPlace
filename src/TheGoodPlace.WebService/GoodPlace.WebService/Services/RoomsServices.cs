@@ -55,6 +55,7 @@ namespace GoodPlace.WebService.Services
                     environnement.Temperature = devicePayloads.Temperature;
                     environnement.Humidity = devicePayloads.Humidity;
                     environnement.Luminosity = devicePayloads.Luminosity;
+                    environnement.LastSync = devicePayloads.LastSync;
 
                     environnement.WellnessValue = Math.Abs(environnement.Temperature - 21) + Math.Abs(environnement.Humidity - 50);
                 }
@@ -114,7 +115,8 @@ namespace GoodPlace.WebService.Services
                 DeviceId = deviceId,
                 Temperature = float.Parse(lastRecordByDeviceTemp.value, CultureInfo.InvariantCulture.NumberFormat),
                 Humidity = float.Parse(lastRecordByDeviceHum.value, CultureInfo.InvariantCulture.NumberFormat),
-                Luminosity = int.Parse(lastRecordByDeviceLum.value, CultureInfo.InvariantCulture.NumberFormat)
+                Luminosity = int.Parse(lastRecordByDeviceLum.value, CultureInfo.InvariantCulture.NumberFormat),
+                LastSync = lastRecordByDeviceTemp.date
             };
 
             return roomEnvironnement;
