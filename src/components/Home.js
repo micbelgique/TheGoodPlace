@@ -1,60 +1,53 @@
 import {useEffect,useState} from 'react'
 import axios from 'axios';
+import Tooltip from '@mui/material/Tooltip';
 
-
-  
 function Home() {
 
-    
     const[data,setData] = useState([])
+    
     useEffect(() => {
       axios.get('https://goodplacewebservice20220714145722.azurewebsites.net/api/Rooms/ranking')
       .then(res => {
         setData(res.data.rooms)
+        this.loading = false;
       })
       .catch(err => console.log(err))
-    },[])
+    },[],
+    {
+      interval: 10_000,
+    })
  
      const value = data.map((data,index) => {
+     const datepreFormate = new Date(data.lastSync)
+     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+     const dateFormate = datepreFormate.toLocaleDateString(undefined, options);
+
        return(
-         <tbody>
-         <td>{data.name}</td>
-           {/* Temperature  */}
-                 <td>{data.temperature}</td>
-           {/* Luminosity */}
-                 <td>{data.luminosity}</td>
-           {/* Presence */}
-                 {/* <td>In the Future</td> */}
-           {/* Humidite */}
-                 <td>{data.humidity}</td>
+      <>
+         <tbody >
+            <Tooltip title={dateFormate}>
+            <td>{data.name}</td>
+            </Tooltip>
+            <td>{data.temperature}</td>
+            <td>{data.luminosity}</td>
+            <td>{data.humidity}</td>
          </tbody>
+        </>
        )
      })
+  return (   
 
-
-    
-
-
-
-
-
-
-  return (    
 <center>
-  
-
-      {/* Device name list */}
-    <h1></h1>
     <center>
     <table>
     <thead>
-            <th>Room</th>
-            <th>Temperature (C°)</th>
-            <th>Luminosité (Lux)</th>
-            {/* <th>Presence (sec)</th> */}
-            <th>Humidite ( % )</th>
+        <th>Room</th>
+        <th>Temperature (C°)</th>
+        <th>Luminosité (Lux)</th>
+        <th>Humidite ( % )</th>
     </thead>
-      {value} 
+        {value} 
     </table>
     </center>
 </center>
