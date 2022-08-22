@@ -10,7 +10,6 @@ function Home() {
       axios.get('https://goodplacewebservice20220714145722.azurewebsites.net/api/Rooms/ranking')
       .then(res => {
         setData(res.data.rooms)
-        this.loading = false;
       })
       .catch(err => console.log(err))
     },[],
