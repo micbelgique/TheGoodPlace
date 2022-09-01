@@ -42,14 +42,14 @@ namespace GoodPlace.WebService.Services
             {
                 Name = "L'espace Network",
                 PictureUrl = "https://www.mic-belgique.be/rooms/Coffee",
-                DeviceId = "70B3D54750100252"
+                DeviceId = ""
             });
 
             roomList.Add(new Room
             {
                 Name = "Le Hall",
                 PictureUrl = "https://www.mic-belgique.be/rooms/Hall",
-                DeviceId = ""
+                DeviceId = "70B3D54750100252"
             });
 
             roomList.Add(new Room
