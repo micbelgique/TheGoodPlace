@@ -1,8 +1,14 @@
+import * as React from 'react';
 import {useEffect,useState} from 'react'
 import axios from 'axios';
 import Tooltip from '@mui/material/Tooltip';
 import LinearProgress from '@mui/material/LinearProgress';
 import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import Button from '@mui/material/Button';
+import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
+
+
 
 function GoodPlace() {
     const [isLoading, setLoading] = useState(false)
@@ -13,12 +19,10 @@ function GoodPlace() {
       .then(res => {
         setData(res.data.theGoodPlace)
         setLoading(true)
+        
       })
       .catch(err => console.log(err))
-    },[],
-    {
-      interval: 10_000,
-    })
+    },[data])
     
     
    
@@ -38,21 +42,49 @@ function GoodPlace() {
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center',
   };
+
+  const style = {
+    backgroundImage: "url('"+image+"')",
+    width:"75%",
+    height:"75%",
+    margin:"auto",
+    marginTop:"5%",
+    backgroundSize: 'cover',
+    backgroundRepeat: 'no-repeat',
+    
+  };
+
+  const [open, setOpen] =  useState();
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+
   return (    
       
 <div>
+
     <div className='title'>
     <h1>The Good Place</h1>
     </div>
-
+  
+{/* Loader */}
     <Box hidden={isLoading} 
          sx={{ width: '100%',
          marginBottom:'1rem'}} >
       <LinearProgress />
     </Box>
 
-    <Tooltip title={dateFormate}>
-      <div className="main-container">
+    <Modal open={open}>
+      <Box sx={style}>
+      <Button variant="secondary" onClick={handleClose}>
+      <CloseFullscreenIcon style={{ 'color': "white" }}/>
+      </Button>
+    </Box>
+   </Modal>
+
+
+    <Tooltip title={dateFormate} onClick={handleOpen}>
+      <div className="main-container" >
         <div className="cards">
          <div className="card card-1" style={divStyle}> 
           <h1 className="card__title">{name}</h1>
