@@ -27,7 +27,7 @@ This folder contains all the source code of the project. You can find the web cl
 
 ## Web
 
-- Web client: https://thegoodplace.azurewebsites.net/
+- Web client: https://proud-sea-0d4262203.1.azurestaticapps.net/
 - Web service: https://goodplacewebservice20220714145722.azurewebsites.net/
 - The project in one article: https://www.mic-belgique.be/blog/articles/trouver-l-endroit-le-plus-agreable-pour-travailler-grace-aux-donnees/
 
