@@ -47,7 +47,7 @@ namespace GoodPlace.WebService.Services
             // We get a list of all room in rankedRoom format
             var environnements = this.MapRoomsIntoEnvironnements(rooms);
 
-            var datas = _dataService.GetRecentRecords(DateTime.Now.AddDays(-1));
+            var datas = _dataService.GetRecentRecords(DateTime.Now.AddDays(-120));
 
             // We associate the values of each devices in the right room
             foreach(RoomEnvironnementDto environnement in environnements)

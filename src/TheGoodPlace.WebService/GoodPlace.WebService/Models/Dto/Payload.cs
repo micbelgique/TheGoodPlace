@@ -16,6 +16,6 @@ namespace GoodPlace.WebService.Dto
         public string value { get; set; }
         public DateTime date { get; set; }
         public ETag ETag { get; set; }
-        DateTimeOffset? ITableEntity.Timestamp { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        DateTimeOffset? ITableEntity.Timestamp { get; set; }
     }
 }
