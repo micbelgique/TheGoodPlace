@@ -33,7 +33,8 @@ namespace GoodPlace.WebService.Services
             RoomRankingDto ranking = new RoomRankingDto
             {
                 Rooms = environnements,
-                TheGoodPlace = goodPlace
+                TheGoodPlace = goodPlace,
+                Justification = "Je suis la justification"
             };
 
             return ranking;
@@ -47,7 +48,7 @@ namespace GoodPlace.WebService.Services
             // We get a list of all room in rankedRoom format
             var environnements = this.MapRoomsIntoEnvironnements(rooms);
 
-            var datas = _dataService.GetRecentRecords(DateTime.Now.AddDays(-120));
+            var datas = _dataService.GetRecentRecords(DateTime.Now.AddDays(-400));
 
             // We associate the values of each devices in the right room
             foreach(RoomEnvironnementDto environnement in environnements)
