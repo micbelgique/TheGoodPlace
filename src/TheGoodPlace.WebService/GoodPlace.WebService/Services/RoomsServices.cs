@@ -3,10 +3,18 @@ using GoodPlace.WebService.Dto;
 using GoodPlace.WebService.Models;
 using GoodPlace.WebService.Services;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+
+//OpenAI Using
+
+using Azure;
+using Azure.AI.OpenAI;
+using static System.Environment;
+using System.Threading.Tasks;
 
 namespace GoodPlace.WebService.Services
 {
@@ -14,13 +22,11 @@ namespace GoodPlace.WebService.Services
     {
         private RoomsDataService _roomDataService;
         private DataService _dataService;
-        private OpenAIService _openAIService;
 
-        public RoomsServices(DataService dataService, OpenAIService openAIService, IConfiguration configuration)
+        public RoomsServices(DataService dataService, IConfiguration configuration)
         {
             _roomDataService = new RoomsDataService();
             _dataService = dataService;
-            _openAIService = openAIService;
         }
 
         public RoomRankingDto GetRoomRanking()
@@ -36,13 +42,53 @@ namespace GoodPlace.WebService.Services
             {
                 Rooms = environnements,
                 TheGoodPlace = goodPlace,
-                Justification = _openAIService.GetJustification()
             };
 
             return ranking;
         }
 
-        private List<RoomEnvironnementDto> CreateRankingFromPayloads() 
+        public string GetJustification()
+        {
+            string rankingRoom = JsonConvert.SerializeObject(this.GetRoomRanking());
+            string endpoint = "";
+            string key = "";
+
+            string engine = "gpt4";
+
+            OpenAIClient client = new OpenAIClient(new Uri(endpoint), new AzureKeyCredential(key));
+
+            string prompt = "Sur base du modèle json  peux-tu me choisir la meilleur pièce à vivre et justifie moi en 2 lignes de manière  scientifique.json : " + rankingRoom;
+            Console.Write($"Input: {prompt}\n");
+
+            Response<Completions> completionsResponse =
+                client.GetCompletions(engine, prompt);
+            string completion = completionsResponse.Value.Choices[0].Text;
+
+            Console.WriteLine($"Chatbot: {completion}");
+   
+            return completion;
+        }
+
+        public RoomRankingWithJustificationDto GetRoomRankingWithJustification()
+        {
+            var environnements = this.CreateRankingFromPayloads()
+                                     .OrderBy(x => x.WellnessValue)
+                                     .ToList();
+
+            var goodPlace = environnements.First();
+            environnements.Remove(goodPlace);
+
+            RoomRankingWithJustificationDto rankingWithJustification = new RoomRankingWithJustificationDto
+            {
+                Rooms = environnements,
+                TheGoodPlace = goodPlace,
+                Justification = GetJustification()
+            };
+
+            return rankingWithJustification;
+        }
+
+        public List<RoomEnvironnementDto> CreateRankingFromPayloads() 
         {
             // We get the rooms from mock service
             var rooms = _roomDataService.GetRooms();
