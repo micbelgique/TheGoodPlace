@@ -14,11 +14,13 @@ namespace GoodPlace.WebService.Services
     {
         private RoomsDataService _roomDataService;
         private DataService _dataService;
+        private OpenAIService _openAIService;
 
-        public RoomsServices(DataService dataService, IConfiguration configuration)
+        public RoomsServices(DataService dataService, OpenAIService openAIService, IConfiguration configuration)
         {
             _roomDataService = new RoomsDataService();
             _dataService = dataService;
+            _openAIService = openAIService;
         }
 
         public RoomRankingDto GetRoomRanking()
@@ -34,7 +36,7 @@ namespace GoodPlace.WebService.Services
             {
                 Rooms = environnements,
                 TheGoodPlace = goodPlace,
-                Justification = "Je suis la justification"
+                Justification = _openAIService.GetJustification()
             };
 
             return ranking;

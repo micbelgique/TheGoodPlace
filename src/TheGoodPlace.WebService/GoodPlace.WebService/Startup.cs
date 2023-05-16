@@ -34,6 +34,7 @@ namespace GoodPlace.WebService
             services.AddScoped<DataService>();
             services.AddScoped<RoomsDataService>();
             services.AddScoped<RoomsServices>();
+            services.AddScoped<OpenAIService>();
 
 
             services.AddSwaggerGen(options =>
