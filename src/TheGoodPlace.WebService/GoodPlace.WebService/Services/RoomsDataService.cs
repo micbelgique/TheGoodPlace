@@ -12,49 +12,55 @@ namespace GoodPlace.WebService.Services
 
             roomList.Add(new Room
             {
-                Name = "La Station",
+                Name = "Station",
                 PictureUrl = "https://www.mic-belgique.be/rooms/Station",
-                DeviceId = "70B3D547501000B5"
+                DeviceId = "70B3D547501000B5",
+                Capacity = 4,
+
             });
 
             roomList.Add(new Room
             {
-                Name = "Le Studio",
+                Name = "Studio",
                 PictureUrl = "https://www.mic-belgique.be/rooms/Studio",
-                DeviceId = "70B3D54750100259"
+                DeviceId = "70B3D54750100259",
+                Capacity = 6
             });
 
             roomList.Add(new Room
             {
-                Name = "Le Cockpit",
+                Name = "Cockpit",
                 PictureUrl = "https://www.mic-belgique.be/rooms/Cockpit",
-                DeviceId = "70B3D54750100291"
-            });
+                DeviceId = "70B3D54750100291",
+                Capacity = 16
+            }) ;
 
             roomList.Add(new Room
             {
-                Name = "Le Loft",
+                Name = "Loft",
                 PictureUrl = "https://www.mic-belgique.be/rooms/Loft",
-                DeviceId = "70B3D54750100263"
+                DeviceId = "70B3D54750100263",
+                Capacity = 8
             });
 
             roomList.Add(new Room
             {
-                Name = "L'espace Network",
+                Name = "Coffee",
                 PictureUrl = "https://www.mic-belgique.be/rooms/Coffee",
                 DeviceId = ""
             });
 
             roomList.Add(new Room
             {
-                Name = "Le Hall",
+                Name = "Hall",
                 PictureUrl = "https://www.mic-belgique.be/rooms/Hall",
-                DeviceId = "70B3D54750100252"
+                DeviceId = "70B3D54750100252",
+                Capacity = 40
             });
 
             roomList.Add(new Room
             {
-                Name = "L'espace Workplace",
+                Name = "OpenSpace",
                 PictureUrl = "https://www.mic-belgique.be/rooms/OpenSpace",
                 DeviceId = ""
             });

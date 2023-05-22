@@ -15,9 +15,9 @@ namespace GoodPlace.WebService.Controllers
         }
         [HttpGet("ranking")]
         [Produces("application/json", Type = null)]
-        public IActionResult GetRoomRankingWithJustification()
+        public IActionResult GetRoomRanking()
         {
-            var ranking = _roomsServices.GetRoomRankingWithJustification();
+            var ranking = _roomsServices.GetRoomRanking();
             return Ok(ranking);
         }
     }

@@ -15,6 +15,10 @@ using Azure;
 using Azure.AI.OpenAI;
 using static System.Environment;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Collections;
 
 namespace GoodPlace.WebService.Services
 {
@@ -29,11 +33,12 @@ namespace GoodPlace.WebService.Services
             _dataService = dataService;
         }
 
-        public RoomRankingDto GetRoomRanking()
+        public async Task<RoomRankingDto> GetRoomRanking()
         {
-            var environnements = this.CreateRankingFromPayloads()
-                                     .OrderBy(x => x.WellnessValue)
-                                     .ToList();
+            List<RoomEnvironnementDto> environnements = await this.CreateRankingFromPayloads();
+
+            environnements.OrderBy(x => x.WellnessValue)
+                           .ToList();
 
             var goodPlace = environnements.First();
             environnements.Remove(goodPlace);
@@ -50,18 +55,19 @@ namespace GoodPlace.WebService.Services
         public string GetJustification()
         {
             string rankingRoom = JsonConvert.SerializeObject(this.GetRoomRanking());
-            string endpoint = "";
-            string key = "";
+            string endpoint = "https://goodplaceopenai.openai.azure.com/";
+            string key = "182533ff6c92423985d5476424f2fe8d";
 
-            string engine = "gpt4";
+            string engine = "text";
 
             OpenAIClient client = new OpenAIClient(new Uri(endpoint), new AzureKeyCredential(key));
 
-            string prompt = "Sur base du modèle json  peux-tu me choisir la meilleur pièce à vivre et justifie moi en 2 lignes de manière  scientifique.json : " + rankingRoom;
+            string prompt = "En moins de 50 mots justifie moi de manière simple et scientifique pourquoi la Studio est la meilleur piece pour travailler tu peux te baser sur ce json pour y repondre sans mentionner le format json" ;
             Console.Write($"Input: {prompt}\n");
 
+
             Response<Completions> completionsResponse =
-                client.GetCompletions(engine, prompt);
+                client.GetCompletions(engine , prompt);
             string completion = completionsResponse.Value.Choices[0].Text;
 
             Console.WriteLine($"Chatbot: {completion}");
@@ -69,70 +75,114 @@ namespace GoodPlace.WebService.Services
             return completion;
         }
 
-        public RoomRankingWithJustificationDto GetRoomRankingWithJustification()
+        //public RoomRankingWithJustificationDto GetRoomRankingWithJustification()
+        //{
+        //    var environnements = this.CreateRankingFromPayloads()
+        //                             .OrderBy(x => x.WellnessValue)
+        //                             .ToList();
+
+        //    var goodPlace = environnements.First();
+        //    environnements.Remove(goodPlace);
+
+        //    RoomRankingWithJustificationDto rankingWithJustification = new RoomRankingWithJustificationDto
+        //    {
+        //        Rooms = environnements,
+        //        TheGoodPlace = goodPlace,
+        //        Justification = GetJustification()
+        //    };
+
+        //    return rankingWithJustification;
+        //}
+
+        public async Task<List<RoomEnvironnementDto>> CreateRankingFromPayloads()
         {
-            var environnements = this.CreateRankingFromPayloads()
-                                     .OrderBy(x => x.WellnessValue)
-                                     .ToList();
-
-            var goodPlace = environnements.First();
-            environnements.Remove(goodPlace);
-
-            RoomRankingWithJustificationDto rankingWithJustification = new RoomRankingWithJustificationDto
-            {
-                Rooms = environnements,
-                TheGoodPlace = goodPlace,
-                Justification = GetJustification()
-            };
-
-            return rankingWithJustification;
-        }
-
-        public List<RoomEnvironnementDto> CreateRankingFromPayloads() 
-        {
-            // We get the rooms from mock service
-            var rooms = _roomDataService.GetRooms();
-
-            // We get a list of all room in rankedRoom format
-            var environnements = this.MapRoomsIntoEnvironnements(rooms);
-
+            // Récupérer les salles depuis le service mock
+            var rooms = _roomDataService.GetRooms().Where(x => !string.IsNullOrEmpty(x.DeviceId)).ToList();
             var datas = _dataService.GetRecentRecords(DateTime.Now.AddDays(-400));
 
-            // We associate the values of each devices in the right room
-            foreach(RoomEnvironnementDto environnement in environnements)
+            // Associer les valeurs de chaque appareil à la salle correspondante
+            string roomList = "";
+            foreach (Room room in rooms)
             {
-                var devicePayloads = this.getLastrecordsFromSpecificDevice(datas, environnement.DeviceId);
-                environnement.Temperature = devicePayloads.Temperature;
-                environnement.Humidity = devicePayloads.Humidity;
-                environnement.Luminosity = devicePayloads.Luminosity;
-                environnement.LastSync = devicePayloads.LastSync;
-
-                // Crazy space futuristic environnement formula
-                environnement.WellnessValue = (Math.Abs(environnement.Temperature - 21) * 3) + Math.Abs(environnement.Humidity - 50);
+                var devicePayloads = this.getLastrecordsFromSpecificDevice(datas, room.DeviceId);
+                roomList += $"La salle {room.Name} : température {devicePayloads.Temperature} degrés, luminosité {devicePayloads.Luminosity} lumens, humidité {devicePayloads.Humidity}%";
             }
 
-            return environnements;
+            // Ajouter le préprompt
+            string prompt = $"Je souhaite réserver une salle pour une réunion. J'ai le choix entre {rooms.Count} salles : {roomList}. " +
+                            $"Quelle salle me conseilles-tu et pourquoi ? Renvoie-moi le résultat sous forme d'une liste JSON respectant ce format : \"Name\" (le nom de la salle sans le mot \"salle\"), \"WellnessValue\" (en pourcentage), \"Temperature\", \"Humidity\", \"Luminosity\", \"Justification\" (en une ligne). Réponds uniquement dans le format JSON. Toutes les salles doivent être présentes dans la liste et seront triées par ordre décroissant de wellnessValue.";
+
+            // OpenAI
+            string apiKey = "";
+            string apiUrl = "";
+            string result = "";
+
+            dynamic requestBody = new
+            {
+                prompt = prompt,
+                max_tokens = 800 // Le nombre maximum de tokens à générer
+            };
+            string requestBodyJson = JsonConvert.SerializeObject(requestBody);
+
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+                var content = new StringContent(requestBodyJson, Encoding.UTF8, "application/json");
+                var response = await client.PostAsync(apiUrl, content);
+              
+                string responseJson = await response.Content.ReadAsStringAsync();
+
+                JObject responseData = JObject.Parse(responseJson);
+                JToken choicesToken = responseData["choices"];
+                if (choicesToken != null && choicesToken.HasValues)
+                {
+                    result = choicesToken[0]["text"].Value<string>().Trim('\n', '"');
+                    Console.WriteLine(result);
+                }
+                else
+                {
+                    Console.WriteLine("Une erreur s'est produite lors de la génération du texte.");
+                }
+
+                List<RoomEnvironnementDto> recommendationList = null;
+
+                try
+                {
+                    string jsonToDeserialize = result.Trim('.', ' ', '\n');
+                    recommendationList = JsonConvert.DeserializeObject<List<RoomEnvironnementDto>>(jsonToDeserialize);
+                    Console.WriteLine("hello" + recommendationList);
+                }
+                catch (JsonException jsonEx)
+                {
+                    Console.WriteLine($"Une erreur s'est produite lors de la désérialisation de la réponse JSON : {jsonEx.Message}");
+                }
+
+                return recommendationList;
+            }
         }
+
+
 
         private List<RoomEnvironnementDto> MapRoomsIntoEnvironnements(List<Room> rooms)
         {
-            List<RoomEnvironnementDto> rankedRooms = new List<RoomEnvironnementDto>();
+            List<RoomEnvironnementDto> environnement = new List<RoomEnvironnementDto>();
             foreach (Room room in rooms)
             {
                 if (room.DeviceId != "")
                 {
-                    rankedRooms.Add(
+                    environnement.Add(
                     new RoomEnvironnementDto
                     {
                         Name = room.Name,
                         PictureUrl = room.PictureUrl,
-                        DeviceId = room.DeviceId
+                        DeviceId = room.DeviceId,
+                        Capacity = room.Capacity
                     }
                     );
                 }
             }
 
-            return rankedRooms;
+            return environnement;
         }
 
         public RoomEnvironnementDto getLastrecordsFromSpecificDevice(List<Payload> data, string deviceId)
