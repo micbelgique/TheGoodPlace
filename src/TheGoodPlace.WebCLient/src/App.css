@@ -1,23 +1,21 @@
 .App {
   text-align: center;
   font-style: bold;
-  font-family: 'Bebas Neue', cursive !important;
+  font-family: "Bebas Neue", cursive !important;
 }
-td{
+td {
   background-color: #d0cfcf4e;
-  text-align: center
+  text-align: center;
 }
-table{
-  width: 50%;
+table {
   align-items: center;
-  border:none;
-  font-size:large;
+  border: none;
+  font-size: large;
 }
-.tableGoodplace{
+.tableGoodplace {
   color: #e6eae6;
   width: 50%;
-  background-color: #00000054
-  
+  background-color: #00000054;
 }
 .cards {
   display: flex;
@@ -28,27 +26,32 @@ table{
   margin: auto;
   margin-bottom: 2rem;
   padding: 50px;
-  width: 80%;
+  width: 40%;
   min-height: 200px;
   display: grid;
   grid-template-rows: 20px 50px 1fr 50px;
   border-radius: 10px;
   box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.25);
   transition: all 0.2s;
-  
 }
 .card:hover {
   box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.4);
   transform: scale(1.01);
-  
 }
 .card__title {
   grid-row: 1/4;
   font-weight: 400;
-  color: #ffffff; 
+  color: #ffffff;
   font-size: 50px;
   background-color: #00000054;
-  
+}
+
+.card_subtitle {
+  grid-row: 1/4;
+  font-weight: 400;
+  color: #3b3b3b;
+  font-size: 18px;
+  margin: auto;
 }
 /* RESPONSIVE */
 @media (max-width: 1600px) {
@@ -56,7 +59,12 @@ table{
     justify-content: center;
   }
 }
-.title{
+.title {
   font-size: xx-large;
   color: #2a2b2a;
+}
+
+.subinfo {
+  font-size: small;
+  color: #dce5dc;
 }
