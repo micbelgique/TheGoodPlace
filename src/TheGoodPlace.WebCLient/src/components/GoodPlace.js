@@ -8,7 +8,7 @@ import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 import GoodPlaceAI from "./GoodPlaceAI";
-
+import Prompt from "./Prompt";
 function GoodPlace() {
   const [isLoading, setLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -16,11 +16,10 @@ function GoodPlace() {
   useEffect(() => {
     axios
       .get(
-        "https://goodplacewebservice20220714145722.azurewebsites.net/api/Rooms/ranking"
+        "https://localhost:7258/api/Rooms/ranking"
       )
       .then((res) => {
         setData(res.data.theGoodPlace);
-        console.log(data + " -----> data");
         setLoading(true);
       })
       .catch((err) => console.log(err));
@@ -30,7 +29,8 @@ function GoodPlace() {
   const tempetature = data.temperature;
   const humidity = data.humidity;
   const luminosity = data.luminosity;
-  const image = "theGoodPlace" + data.name;
+  const image = "https://www.mic-belgique.be/rooms/" + data.name;
+
   const lastSync = data.lastSync;
   const datepreFormate = new Date(lastSync);
   const options = {
@@ -49,7 +49,6 @@ function GoodPlace() {
     backgroundSize: "cover",
     backgroundRepeat: "no-repeat",
     backgroundPosition: "center",
-    backgroundColor: "#1e641e",
   };
 
   const style = {
@@ -71,21 +70,23 @@ function GoodPlace() {
       <div className="title">
         <h1>The Good Place</h1>
       </div>
-
-      {/* Loader */}
+      
       <Box hidden={isLoading} sx={{ width: "100%", marginBottom: "1rem" }}>
         <LinearProgress />
       </Box>
-
+    
+      {/* Loader */}
       <Modal open={open}>
         <Box sx={style}>
           <Button variant="secondary" onClick={handleClose}>
-            <CloseFullscreenIcon style={{ color: "white" }} />
+            <CloseFullscreenIcon style={{ color: "red" }} />
           </Button>
         </Box>
       </Modal>
 
-      <Tooltip title={dateFormate} onClick={handleOpen}>
+      {/* <Prompt/> */}
+
+      <Tooltip title="The GoodPlace" onClick={handleOpen}>
         <div className="main-container">
           <div className="cards">
             <div className="card card-1" style={divStyle}>

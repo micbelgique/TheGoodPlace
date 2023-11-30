@@ -23,9 +23,9 @@ public class OpenAiService : IOpenAiService
     {
         var requestBody = new
         {
-            model = "text-davinci-003", // Le modèle à utiliser
+            model = "text-davinci-003", 
             prompt,
-            max_tokens = 800 // Le nombre maximum de tokens à générer
+            max_tokens = 800 
         };
 
         using (HttpClient client = new HttpClient())
@@ -44,7 +44,7 @@ public class OpenAiService : IOpenAiService
 
                 if (choicesToken.ValueKind == JsonValueKind.Array && choicesToken.GetArrayLength() > 0)
                 {
-                    return choicesToken[0].GetProperty("text").GetString()?.Trim('\n', '"');
+                    return choicesToken[0].GetProperty("text").GetString()?.Trim('\n', '"');   
                 }
                 else
                 {

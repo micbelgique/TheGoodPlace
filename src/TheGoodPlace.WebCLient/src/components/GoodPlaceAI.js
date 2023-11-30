@@ -9,7 +9,7 @@ function GoodPlaceAI() {
   useEffect(() => {
     axios
       .get(
-        "https://goodplacewebservice20220714145722.azurewebsites.net/api/Rooms/ranking"
+        "https://localhost:7258/api/Rooms/ranking"
       )
       .then((res) => {
         setJustifications(res.data.theGoodPlace.justification); 
@@ -23,7 +23,7 @@ function GoodPlaceAI() {
       <Tooltip>
         <div className="main-container">
           <div className="subinfo"> {justifications}</div>
-        </div>
+      </div>
       </Tooltip>
     </div>
   );
