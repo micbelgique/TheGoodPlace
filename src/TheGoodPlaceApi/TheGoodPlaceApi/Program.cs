@@ -9,8 +9,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<TableStorageService>();
 
-builder.Services.AddScoped<DataService>();
+builder.Services.AddScoped<TableStorageService>();
 builder.Services.AddScoped<RoomsDataService>();
 builder.Services.AddScoped<RoomsServices>();
 
@@ -25,6 +26,7 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -10,67 +10,69 @@ namespace TheGoodPlaceApi.Services
         {
             List<Room> roomList = new List<Room>();
 
-            roomList.Add(new Room
-            {
-                Name = "Station",
-                PictureUrl = "https://www.mic-belgique.be/rooms/Station",
-                DeviceId = "70B3D547501000B5",
-                Capacity = 4,
+            //roomList.Add(new Room
+            //{
+            //    Name = "Station",
+            //    PictureUrl = "https://www.mic-belgique.be/rooms/Station",
+            //    DeviceName = "70B3D547501000B5",
+            //    Capacity = 4,
 
-            });
-
+            //});
+       
             roomList.Add(new Room
             {
                 Name = "Studio",
                 PictureUrl = "https://www.mic-belgique.be/rooms/Studio",
-                DeviceId = "70B3D54750100259",
+                Deviceid = "MXChip-002",
                 Capacity = 6
             });
 
+         
             roomList.Add(new Room
             {
                 Name = "Cockpit",
                 PictureUrl = "https://www.mic-belgique.be/rooms/Cockpit",
-                DeviceId = "70B3D54750100291",
+                Deviceid = "MXChip-001",
                 Capacity = 16
             }) ;
 
+         
             roomList.Add(new Room
             {
                 Name = "Loft",
                 PictureUrl = "https://www.mic-belgique.be/rooms/Loft",
-                DeviceId = "70B3D54750100263",
+                Deviceid = "MXChip-003",
                 Capacity = 8
             });
 
-            roomList.Add(new Room
-            {
-                Name = "Coffee",
-                PictureUrl = "https://www.mic-belgique.be/rooms/Coffee",
-                DeviceId = ""
-            });
-
+            //roomList.Add(new Room
+            //{
+            //    Name = "Coffee",
+            //    PictureUrl = "https://www.mic-belgique.be/rooms/Coffee",
+            //    DeviceName = ""
+            //});
+            //here
             roomList.Add(new Room
             {
                 Name = "Hall",
                 PictureUrl = "https://www.mic-belgique.be/rooms/Hall",
-                DeviceId = "70B3D54750100252",
+                Deviceid= "MXChip-004",
                 Capacity = 40
             });
 
-            roomList.Add(new Room
-            {
-                Name = "OpenSpace",
-                PictureUrl = "https://www.mic-belgique.be/rooms/OpenSpace",
-                DeviceId = ""
-            });
+            //roomList.Add(new Room
+            //{
+            //    Name = "OpenSpace",
+            //    PictureUrl = "https://www.mic-belgique.be/rooms/OpenSpace",
+            //    DeviceName = ""
+            //});
 
-            roomList.Add(new Room
-            {
-                Name = "L'espace Softlab",
-                PictureUrl = "",
-                DeviceId = ""
-            });
+            //roomList.Add(new Room
+            //{
+            //    Name = "L'espace Softlab",
+            //    PictureUrl = "",
+            //    DeviceName = ""
+            //});
 
 
             return roomList;

@@ -7,51 +7,34 @@ using System.Text.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using TheGoodPlaceApi.Models.Dto;
 
 namespace TheGoodPlaceApi.Services
 {
     public class RoomsServices
     {
         private RoomsDataService _roomDataService;
-        private DataService _dataService;
+        private TableStorageService _dataService;
         private readonly IConfiguration _configuration;
 
-        public RoomsServices(DataService dataService, IConfiguration configuration)
+        public RoomsServices(TableStorageService dataService, IConfiguration configuration)
         {
             _roomDataService = new RoomsDataService();
             _dataService = dataService;
             _configuration = configuration;
         }
 
-        public async Task<RoomRankingDto> GetRoomRanking()
+       public async Task<RoomRankingResponseDto> GetRoomRanking()
         {
-            List<RoomEnvironnementDto> environnements = await this.CreateRankingFromPayloads();
-
-            //environnements.OrderBy(x => x.WellnessValue)
-            //               .ToList();
-
-            var goodPlace = environnements.First();
-            environnements.Remove(goodPlace);
-
-            RoomRankingDto ranking = new RoomRankingDto
-            {
-                Rooms = environnements,
-                TheGoodPlace = goodPlace,
-            };
-
-            return ranking;
-        }
-
-       public async Task<List<RoomEnvironnementDto>> CreateRankingFromPayloads()
-        {
-            var rooms = _roomDataService.GetRooms().Where(x => !string.IsNullOrEmpty(x.DeviceId)).ToList();
-            var datas = _dataService.GetRecentRecords(DateTime.Now.AddDays(-10));
+            var rooms = _roomDataService.GetRooms().Where(x => !string.IsNullOrEmpty(x.Deviceid)).ToList();
+            var datas = _dataService.GetAllDatasWithHumidity();
 
             string roomList = "";
             foreach (Room room in rooms)
             {
-                var devicePayloads = this.getLastrecordsFromSpecificDevice(datas, room.DeviceId);
-                roomList += $"La salle {room.Name} :DeviceId {room.DeviceId} : température {devicePayloads.Temperature} degrés, luminosité {devicePayloads.Luminosity} lumens, humidité {devicePayloads.Humidity}%, lastSync {devicePayloads.LastSync}";
+                // Faire le matching room -> DeviceID
+                // Ancien code : //var devicePayload = this.getLastrecordsFromSpecificDevice(datas, room.Deviceid);
+        //        roomList += $"La salle {room.Name} :DeviceId {room.Deviceid} : température {devicePayload.Temperature} degrés, luminosité {devicePayload.Luminosity} lumens, humidité {devicePayloads.Humidity}%, lastSync {devicePayloads.LastSync}";
             }
 
             string prompt = $"Je souhaite réserver une salle pour une réunion. J'ai le choix entre {rooms.Count} salles : {roomList}. " +
@@ -61,81 +44,12 @@ namespace TheGoodPlaceApi.Services
             string apiUrl = "https://api.openai.com/v1/completions";
 
             IOpenAiService openAiService = new OpenAiService(apiKey, apiUrl);
-            string result = await openAiService.GenerateTextAsync(prompt);
+            var ranking = await openAiService.GetRoomRanking(prompt);
 
-            List<RoomEnvironnementDto> recommendationList = null;
+            // AJouter un traitement de tri + (quelques verifications)
 
-            string jsonToDeserialize = result;
-            recommendationList = JsonSerializer.Deserialize<List<RoomEnvironnementDto>>(jsonToDeserialize);
-
-            return recommendationList;
+            return ranking;
         }
 
-
-
-
-
-        private List<RoomEnvironnementDto> MapRoomsIntoEnvironnements(List<Room> rooms)
-        {
-            List<RoomEnvironnementDto> environnement = new List<RoomEnvironnementDto>();
-            foreach (Room room in rooms)
-            {
-                if (room.DeviceId != "")
-                {
-                    environnement.Add(
-                    new RoomEnvironnementDto
-                    {
-                        Name = room.Name,
-                        PictureUrl = room.PictureUrl,
-                        DeviceId = room.DeviceId,
-                        Capacity = room.Capacity
-                    }
-                    );
-                }
-            }
-
-            return environnement;
-        }
-
-        public RoomEnvironnementDto getLastrecordsFromSpecificDevice(List<Payload> data, string deviceId)
-        
-        {
-            // Query  by deviceId
-
-            var lastRecordByDeviceTemp = data
-                 .Where(x
-                     => x.devEUI == deviceId
-                     && x.container == "temperature"
-                     )
-                 .OrderByDescending(x => x.date)
-                 .FirstOrDefault();
-
-            var lastRecordByDeviceHum = data
-                 .Where(x
-                     => x.devEUI == deviceId
-                     && x.container == "humidity"
-                     )
-                 .OrderByDescending(x => x.date)
-                 .FirstOrDefault();
-
-            var lastRecordByDeviceLum = data
-                 .Where(x
-                     => x.devEUI == deviceId
-                     && x.container == "luminosity"
-                     )
-                 .OrderByDescending(x => x.date)
-                 .FirstOrDefault();
-
-            RoomEnvironnementDto roomEnvironnement = new RoomEnvironnementDto
-            {
-                DeviceId = deviceId,
-                Temperature = float.Parse(lastRecordByDeviceTemp.value, CultureInfo.InvariantCulture.NumberFormat),
-                Humidity = float.Parse(lastRecordByDeviceHum.value, CultureInfo.InvariantCulture.NumberFormat),
-                Luminosity = int.Parse(lastRecordByDeviceLum.value, CultureInfo.InvariantCulture.NumberFormat),
-                LastSync = lastRecordByDeviceTemp.date
-            };
-
-            return roomEnvironnement;
-        }
     }
 }

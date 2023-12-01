@@ -8,6 +8,6 @@ namespace TheGoodPlaceApi.Models
         public string Name { get; set; }
         public int Capacity { get; set; }
         public string PictureUrl { get; set; }
-        public string DeviceId { get; set; }
+        public string Deviceid { get; set; }
     }
 }
