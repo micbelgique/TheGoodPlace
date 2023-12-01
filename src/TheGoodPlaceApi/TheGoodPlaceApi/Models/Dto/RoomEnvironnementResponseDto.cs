@@ -7,7 +7,7 @@ namespace TheGoodPlaceApi.Models
     {
         // Propriétés de Room
         public int Id { get; set; }
-        public string RoomName { get; set; }
+        public string Name { get; set; }
         public int Capacity { get; set; }
         public string PictureUrl { get; set; }
 
