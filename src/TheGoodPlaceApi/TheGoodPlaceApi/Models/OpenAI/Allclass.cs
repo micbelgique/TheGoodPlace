@@ -3,16 +3,27 @@ using System.Collections.Generic;
 
 public class ResponseFormat
 {
-    public  string type { get; set; }
+    public string type { get; set; }
 }
 
 public class Message
 {
-    public  string role { get; set; }
-    public  string content { get; set; }
+    public string role { get; set; }
+    public string content { get; set; }
 }
 
-public class Rooms
+public class ParametersProperties
+{
+    public string Type { get; set; }
+    public Properties Properties { get; set; }
+}
+
+public class Properties
+{
+    public Salles Salles { get; set; }
+}
+
+public class Salles
 {
     public string Type { get; set; }
     public Item Items { get; set; }
@@ -30,7 +41,6 @@ public class Properties1
     public Name Name { get; set; }
     public Capacity Capacity { get; set; }
     public PictureUrl PictureUrl { get; set; }
-    public DeviceId DeviceId { get; set; }
     public WellnessValue WellnessValue { get; set; }
     public Temperature Temperature { get; set; }
     public Humidity Humidity { get; set; }
@@ -50,12 +60,6 @@ public class Capacity
 }
 
 public class PictureUrl
-{
-    public string Type { get; set; }
-    public string Description { get; set; }
-}
-
-public class DeviceId
 {
     public string Type { get; set; }
     public string Description { get; set; }
@@ -107,7 +111,7 @@ public class ParametersParameters
 
 public class Properties2
 {
-    public Rooms rooms { get; set; }
+    public Salles Salles { get; set; }
 }
 
 public class RootObject

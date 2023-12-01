@@ -59,7 +59,7 @@ public class OpenAiService : IOpenAiService
                             type = "object",
                             properties = new Properties2
                             {
-                                rooms = new Rooms
+                                Salles = new Salles
                                 {
                                     Type = "array",
                                     Items = new Item
@@ -79,7 +79,7 @@ public class OpenAiService : IOpenAiService
                                     }
                                 }
                             },
-                            required = new List<string> { "rooms" }
+                            required = new List<string> { "salles" }
                         }
                     }
                 },
@@ -107,7 +107,8 @@ public class OpenAiService : IOpenAiService
                 var completionResponse = JsonSerializer.Deserialize<OpenAiCompletionRequestDto>(responseContent);
 
                 var roomsResponse = completionResponse.choices[0].message.function_call.arguments;
-                RoomRankingResponseDto rooms = JsonSerializer.Deserialize<RoomRankingResponseDto>(roomsResponse);
+                RoomRankingResponseDto rooms = JsonSerializer.Deserialize<RoomRankingResponseDto>(roomsResponse,
+                        new JsonSerializerOptions { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             }
             else
             {
