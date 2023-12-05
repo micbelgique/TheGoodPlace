@@ -18,11 +18,10 @@ namespace TheGoodPlaceApi.Controllers
         [Produces("application/json", Type = null)]
         public async Task<IActionResult> GetRoomRanking()
         {
-            OpenAiService os = new OpenAiService("4a5a265069944ae487797615e7256df8", "https://openaideepwork.openai.azure.com/openai/deployments/deepwork/chat/completions?api-version=2023-07-01-preview");
-
-            var ranking = await os.GetRoomRanking("j'ai une liste de salle: [Chambre:34°,Bureau:10°,Gallery:20°] et je souhaite les mettre dans l'ordre par rapport à l'heure wellnessvalue");
-            //var ranking = await _roomsServices.GetRoomRanking();
+            var ranking = await _roomsServices.GetRoomRanking();
             return Ok(ranking);
         }
+
+
     }
 }

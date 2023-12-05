@@ -2,6 +2,6 @@
 {
     public class RoomRankingResponseDto
     {
-        public List<RoomEnvironnementResponseDto> salles  { get; set; }
+        public List<RoomEnvironnementResponseDto> salles { get; set; }
     }
 }

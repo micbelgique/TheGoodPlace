@@ -29,22 +29,28 @@ namespace TheGoodPlaceApi.Services
             var rooms = _roomDataService.GetRooms().Where(x => !string.IsNullOrEmpty(x.Deviceid)).ToList();
             var datas = _dataService.GetAllDatasWithHumidity();
 
-            string roomList = "";
+            string roomDeviceList = "";
+
             foreach (Room room in rooms)
             {
-                // Faire le matching room -> DeviceID
-                // Ancien code : //var devicePayload = this.getLastrecordsFromSpecificDevice(datas, room.Deviceid);
-        //        roomList += $"La salle {room.Name} :DeviceId {room.Deviceid} : température {devicePayload.Temperature} degrés, luminosité {devicePayload.Luminosity} lumens, humidité {devicePayloads.Humidity}%, lastSync {devicePayloads.LastSync}";
+                var dataForRoom = datas.FirstOrDefault(d => d.deviceName == room.Deviceid);
+                if (dataForRoom != null)
+                {
+                    roomDeviceList += $"- Salle {room.Name} :{dataForRoom.value}, Capacité : {room.Capacity}, PictureUrl: {room.PictureUrl}";
+                }
+                Console.WriteLine($"RoomDeviceList: {roomDeviceList}");
             }
 
-            string prompt = $"Je souhaite réserver une salle pour une réunion. J'ai le choix entre {rooms.Count} salles : {roomList}. " +
-                            $"Quelle salle me conseilles-tu et pourquoi ? Renvoie-moi le résultat sous forme d'une liste JSON respectant ce format : \"Name\" (le nom de la salle sans le mot \"salle\"),\"DeviceId\" (l'id de la salle), \"WellnessValue\" (en pourcentage), \"Temperature\", \"Humidity\", \"Luminosity\", \"Justification\", \"lastSync\" (en une ligne). Réponds uniquement dans le format JSON. Toutes les salles doivent être présentes dans la liste et seront triées par ordre décroissant de wellnessValue.";
+            string systemPrompt = "Calcule la wellnesvalue c'est un nombre de 1 à 100 du bien etre, plus les temperature, l'humidité et la pression sont propice à travailler plus sa wellness value sera grande";
+
+            string userPrompt = $"Voici mes {rooms.Count} salles :[ {roomDeviceList}].renvoit le tout dans un json format ou wellnessvalue et justification sont toujours remplis";
+                
 
             string apiKey = _configuration.GetValue<string>("ConnectionStrings:OpenAiApiKey");
-            string apiUrl = "https://api.openai.com/v1/completions";
+            string apiUrl = _configuration.GetValue<string>("ConnectionStrings:OpenAiEndpoint");
 
             IOpenAiService openAiService = new OpenAiService(apiKey, apiUrl);
-            var ranking = await openAiService.GetRoomRanking(prompt);
+            var ranking = await openAiService.GetRoomRanking(systemPrompt, userPrompt);
 
             // AJouter un traitement de tri + (quelques verifications)
 

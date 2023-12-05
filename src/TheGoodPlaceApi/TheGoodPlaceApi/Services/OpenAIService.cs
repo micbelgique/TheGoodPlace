@@ -5,11 +5,12 @@ using System.Text;
 using TheGoodPlaceApi.Models.Dto;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using TheGoodPlaceApi.Models.OpenAI;
+using System.Net;
 
 public interface IOpenAiService
 {
     Task<string> GenerateTextAsync(string prompt);
-    Task<RoomRankingResponseDto> GetRoomRanking(string prompt);
+    Task<RoomRankingResponseDto> GetRoomRanking(string systemPrompt, string userPrompt);
 }
 
 public class OpenAiService : IOpenAiService
@@ -28,7 +29,7 @@ public class OpenAiService : IOpenAiService
         throw new NotImplementedException();
     }
 
-    public async Task<RoomRankingResponseDto> GetRoomRanking(string prompt)
+    public async Task<RoomRankingResponseDto> GetRoomRanking(string systemPrompt, string userPrompt)
     {
         var requestObject = new RootObject
         {
@@ -39,12 +40,12 @@ public class OpenAiService : IOpenAiService
                     new Message
                     {
                         role = "system",
-                        content = "Tu es un assistant qui va faire un ranking des salles en calculant la wellnessvalue et tu vas la justifier le tout dans JSON format."
+                        content = systemPrompt
                     },
                     new Message
                     {
                         role = "user",
-                        content = $"{prompt}"
+                        content = userPrompt
                     }
 
                 },
@@ -53,7 +54,7 @@ public class OpenAiService : IOpenAiService
                     new Functions
                     {
                         name = "calculate_wellness_value",
-                        description = "Calcule la valeur de bien-être pour chaque salle en fonction de la température",
+                        description = "Calcule la wellnessvalue et donne une justification",
                         parameters = new ParametersParameters
                         {
                             type = "object",
@@ -67,15 +68,15 @@ public class OpenAiService : IOpenAiService
                                         Type = "object",
                                         Properties = new Properties1
                                         {
-                                            Name = new Name { Type = "string", Description = "Nom de la salle de travail" },
-                                            Capacity = new Capacity { Type = "string", Description = "Capacité de la salle de travail" },
-                                            PictureUrl = new PictureUrl { Type = "string", Description = "URL de l'image de la salle de travail" },
-                                            WellnessValue = new WellnessValue { Type = "string", Description = "Valeur de bien-être de la salle de travail" },
-                                            Temperature = new Temperature { Type = "string", Description = "Température de la salle de travail" },
-                                            Humidity = new Humidity { Type = "string", Description = "Humidité de la salle de travail" },
-                                            Justification = new Justification { Type = "string", Description = "Justification de la valeur de bien-être de la salle de travail" }
+                                            Name = new Name { Type = "string", Description = "Nom de la salle" },
+                                            Capacity = new Capacity { Type = "string", Description = "Nombre de personne que peut acceuillir la salle" },                         
+                                            WellnessValue = new WellnessValue { Type = "string", Description = "Nombre de 1 à 100 du bien etre, plus les temperature, l'humidité et la pression sont propice à travailler plus sa wellnessvalue sera grande" },
+                                            Temperature = new Temperature { Type = "string", Description = "La température de la salle en Celcius" },
+                                            Humidity = new Humidity { Type = "string", Description = "Le niveau d'humidité de la salle en %" },
+                                            Justification = new Justification { Type = "string", Description = "La justification du score de bien-être de calcul en une phrase" },
+                                            PictureUrl = new PictureUrl { Type = "string", Description = "L'url de l'image de la salle" }
                                         },
-                                        Required = new List<string> { "name", "capacity", "pictureUrl", "wellnessValue", "temperature", "humidity", "justification" }
+                                        Required = new List<string> { "name", "capacity", "wellnessValue", "temperature", "humidity", "justification", "PictureUrl" }
                                     }
                                 }
                             },
@@ -85,14 +86,16 @@ public class OpenAiService : IOpenAiService
                 },
             function_call = "auto",
 
-            temperature = 0.7
+            temperature = 0.75
         };
 
+        Console.WriteLine($"System Prompt: {systemPrompt}");
+        Console.WriteLine($"User Prompt: {userPrompt}");
 
         var jsonRequest = JsonSerializer.Serialize(requestObject,
              new JsonSerializerOptions { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
 
-
+        Console.WriteLine($"JSON Request: {jsonRequest}");
 
         using (var httpClient = new HttpClient())
         {
@@ -107,21 +110,23 @@ public class OpenAiService : IOpenAiService
                 var completionResponse = JsonSerializer.Deserialize<OpenAiCompletionRequestDto>(responseContent);
 
                 var roomsResponse = completionResponse.choices[0].message.function_call.arguments;
+
+
                 RoomRankingResponseDto rooms = JsonSerializer.Deserialize<RoomRankingResponseDto>(roomsResponse,
                         new JsonSerializerOptions { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                return rooms;
             }
             else
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
                 Console.WriteLine($"Erreur : {response.StatusCode}");
                 Console.WriteLine($"Contenu de l'erreur : {errorContent}");
+                return null;
             }
 
 
         }
 
-
-        return new RoomRankingResponseDto();
     }
     
 }

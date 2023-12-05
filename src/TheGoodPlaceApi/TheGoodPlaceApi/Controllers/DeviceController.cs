@@ -31,6 +31,19 @@ public class DeviceController : ControllerBase
         return Ok(latestHumidityDataForEachDevice);
     }
 
+    [HttpGet("DeviceData/{deviceName}")]
+    [Produces("application/json", Type = null)]
+    public IActionResult GetDeviceData(string deviceName)
+    {
+        var dataForDevice = _mxChipService.GetDataForDevice(deviceName);
+
+        if (dataForDevice == null || dataForDevice.Count == 0)
+        {
+            return NotFound($"No data found for device: {deviceName}");
+        }
+
+        return Ok(dataForDevice);
+    }
 
 
 

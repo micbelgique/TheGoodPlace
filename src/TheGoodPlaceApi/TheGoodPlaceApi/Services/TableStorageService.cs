@@ -28,9 +28,6 @@ namespace TheGoodPlaceApi.Services
         }
 
 
-
-
-
         public List<DevicePayloadRequestDto> GetAllDatas()
         {
            
@@ -54,6 +51,21 @@ namespace TheGoodPlaceApi.Services
 
             return latestHumidityDataForEachDevice;
         }
+
+        public List<DevicePayloadRequestDto> GetDataForDevice(string deviceName)
+        {
+            var allData = GetAllDatasWithHumidity();
+
+            var dataForDevice = allData
+                .Where(d => d.deviceName == deviceName)
+                .ToList();
+
+            return dataForDevice;
+        }
+
+
+
+
 
 
     }
