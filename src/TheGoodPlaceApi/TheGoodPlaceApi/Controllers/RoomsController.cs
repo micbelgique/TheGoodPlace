@@ -19,6 +19,7 @@ namespace TheGoodPlaceApi.Controllers
         public async Task<IActionResult> GetRoomRanking()
         {
             var ranking = await _roomsServices.GetRoomRanking();
+            ranking.salles = ranking.salles.OrderByDescending(s => int.Parse(s.WellnessValue)).ToList();
             return Ok(ranking);
         }
 

@@ -51,8 +51,8 @@ namespace TheGoodPlaceApi.Services
 
             IOpenAiService openAiService = new OpenAiService(apiKey, apiUrl);
             var ranking = await openAiService.GetRoomRanking(systemPrompt, userPrompt);
-
-            // AJouter un traitement de tri + (quelques verifications)
+            
+           
 
             return ranking;
         }
