@@ -5,6 +5,7 @@ import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 import Box from "@mui/material/Box";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { useEffect, useState } from "react";
+import React from "react";
 
 interface Room {
   name: string;
