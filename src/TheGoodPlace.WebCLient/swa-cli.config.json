@@ -3,10 +3,10 @@
   "configurations": {
     "the-good-place.web-client": {
       "appLocation": ".",
-      "outputLocation": "build",
+      "outputLocation": "dist",
       "appBuildCommand": "npm run build",
-      "run": "npm start",
-      "appDevserverUrl": "http://localhost:3000",
+      "run": "npm run dev",
+      "appDevserverUrl": "http://localhost:5173",
       "appName": "theGoodPlace-0822-swa",
       "resourceGroupName": "RG-GoodPlace-0722",
       "resourceGroup": "RG-GoodPlace-0722"
