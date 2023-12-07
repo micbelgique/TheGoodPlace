@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 public class ResponseFormat
 {
@@ -18,34 +20,49 @@ public class ParametersProperties
     public Properties Properties { get; set; }
 }
 
-public class Properties
-{
-    public Salles Salles { get; set; }
-}
-
+//roomsopenaidescriptionoffunction
 public class Salles
 {
-    public string Type { get; set; }
-    public Item Items { get; set; }
+    public string Type { get; set; } = "array";
+    public Item Items { get; set; } = new Item(typeof(Properties));
 }
 
 public class Item
 {
-    public string Type { get; set; }
-    public Properties1 Properties { get; set; }
+    public string Type { get; set; } = "object";
+    public Properties Properties { get; set; } = new Properties();
+
     public List<string> Required { get; set; }
+
+    public Item(Type type)
+    {
+        this.Required = type.GetProperties().Where(x => Attribute.IsDefined(x, typeof(RequiredAttribute)))
+                                            .Select(x => x.Name.ToLower())
+                                            .ToList();
+    }
 }
 
-public class Properties1
+
+// How to use : 
+public class Properties
 {
-    public Name Name { get; set; }
-    public Capacity Capacity { get; set; }
-    public PictureUrl PictureUrl { get; set; }
-    public WellnessValue WellnessValue { get; set; }
-    public Temperature Temperature { get; set; }
-    public Humidity Humidity { get; set; }
-    public Justification Justification { get; set; }
+    [Required]
+    public Name Name { get; set; } = new Name { Type = "string", Description = "Nom de la salle" };
+    [Required]
+    public Capacity Capacity { get; set; } = new Capacity { Type = "string", Description = "Nombre de personne que peut accueillir la salle" };
+    [Required]
+    public WellnessValue WellnessValue { get; set; } = new WellnessValue { Type = "string", Description = "Nombre de 1 à 100 du bien-être, plus les température, l'humidité et la pression sont propices à travailler plus sa wellnessvalue sera grande" };
+    [Required]
+    public Temperature Temperature { get; set; } = new Temperature { Type = "string", Description = "La température de la salle en Celsius" };
+    [Required]
+    public Humidity Humidity { get; set; } = new Humidity { Type = "string", Description = "Le niveau d'humidité de la salle en %" };
+    [Required]
+    public Justification Justification { get; set; } = new Justification { Type = "string", Description = "La justification du score de bien-être de calcul en une phrase" };
+    [Required]
+    public PictureUrl PictureUrl { get; set; } = new PictureUrl { Type = "string", Description = "L'url de l'image de la salle" };
+
 }
+
 
 public class Name
 {

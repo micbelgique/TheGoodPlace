@@ -60,32 +60,14 @@ public class OpenAiService : IOpenAiService
                             type = "object",
                             properties = new Properties2
                             {
-                                Salles = new Salles
-                                {
-                                    Type = "array",
-                                    Items = new Item
-                                    {
-                                        Type = "object",
-                                        Properties = new Properties1
-                                        {
-                                            Name = new Name { Type = "string", Description = "Nom de la salle" },
-                                            Capacity = new Capacity { Type = "string", Description = "Nombre de personne que peut acceuillir la salle" },                         
-                                            WellnessValue = new WellnessValue { Type = "string", Description = "Nombre de 1 à 100 du bien etre, plus les temperature, l'humidité et la pression sont propice à travailler plus sa wellnessvalue sera grande" },
-                                            Temperature = new Temperature { Type = "string", Description = "La température de la salle en Celcius" },
-                                            Humidity = new Humidity { Type = "string", Description = "Le niveau d'humidité de la salle en %" },
-                                            Justification = new Justification { Type = "string", Description = "La justification du score de bien-être de calcul en une phrase" },
-                                            PictureUrl = new PictureUrl { Type = "string", Description = "L'url de l'image de la salle" }
-                                        },
-                                        Required = new List<string> { "name", "capacity", "wellnessValue", "temperature", "humidity", "justification", "PictureUrl" }
-                                    }
-                                }
+                                Salles = new Salles()
+
                             },
                             required = new List<string> { "salles" }
                         }
                     }
                 },
             function_call = "auto",
-
             temperature = 0.75
         };
 
